@@ -3,4 +3,5 @@
     <string name="activity_main_title">Pop Movies</string>
     <string name="title_activity_movie_detail">Movie Details</string>
     <string name="error_message">Failed to load the movie list</string>
+    <string name="action_settings">Settings</string>
 </resources>

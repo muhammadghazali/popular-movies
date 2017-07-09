@@ -16,6 +16,9 @@ public final class NetworkUtils {
     private static final String POPULAR_MOVIE_URL =
             "https://api.themoviedb.org/3/movie/popular";
 
+    private static final String TOP_RATED_MOVIE_URL =
+            "https://api.themoviedb.org/3/movie/top_rated";
+
     final static String API_KEY_PARAM = "api_key";
 
     /**
