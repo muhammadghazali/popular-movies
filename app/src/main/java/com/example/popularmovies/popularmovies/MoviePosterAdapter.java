@@ -10,20 +10,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder> {
-    private String[] mMovieList = {
-            "https://image.tmdb.org/t/p/w640/9OjFAb9r21TNJIbbMVAZtbj3I60.jpg",
-            "https://image.tmdb.org/t/p/w640/4WinsdHQBdh5aTt7Bd7T7dbUXbb.jpg",
-            "https://image.tmdb.org/t/p/w640/jnllnSq8u4d1oQPU7PsoAHD6bLU.jpg",
-            "https://image.tmdb.org/t/p/w640/7SSm7BfzFoVzmd6fCDccj7qRxc8.jpg",
-            "https://image.tmdb.org/t/p/w640/iTST6DcLhfufWYUKCOskkusaYUq.jpg",
-            "https://image.tmdb.org/t/p/w640/9EXnebqbb7dOhONLPV9Tg2oh2KD.jpg",
-            "https://image.tmdb.org/t/p/w640/4PiiNGXj1KENTmCBHeN6Mskj2Fq.jpg",
-            "https://image.tmdb.org/t/p/w640/hZrkA4aFcCCzatBJ2kqrLaCHd5t.jpg",
-            "https://image.tmdb.org/t/p/w640/wHJKSDX1ZZqL5pvewihMgSDTQyf.jpg",
-            "https://image.tmdb.org/t/p/w640/7k6nlkYkSs8zCTv0RHwaxehJG3u.jpg",
-            "https://image.tmdb.org/t/p/w640/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg",
-            "https://image.tmdb.org/t/p/w640/f8Ng1Sgb3VLiSwAvrfKeQPzvlfr.jpg"
-    };
+    private String[] mMovieList = {};
 
     private Context mParentContext;
 
@@ -65,5 +52,17 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
             mMoviePosterImageView = (ImageView) itemView.findViewById(R.id.movie_poster_img);
         }
+    }
+
+    /**
+     * This method is used to set the weather forecast on a ForecastAdapter if we've already
+     * created one. This is handy when we get new data from the web but don't want to create a
+     * new ForecastAdapter to display it.
+     *
+     * @param movieData The new weather data to be displayed.
+     */
+    public void setMovieData(String[] movieData) {
+        mMovieList = movieData;
+        notifyDataSetChanged();
     }
 }
