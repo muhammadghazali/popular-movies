@@ -1,24 +1,30 @@
 package com.example.popularmovies.popularmovies;
 
 import android.content.Context;
+
+import com.example.popularmovies.popularmovies.models.Movie;
+
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.popularmovies.popularmovies.models.MovieList;
 import com.squareup.picasso.Picasso;
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder> {
-    private String[] mMovieList = {};
+    private MovieList mMovieList = null;
 
     private Context mParentContext;
 
     @Override
     public void onBindViewHolder(MoviePosterAdapterViewHolder holder, int position) {
+        Movie movie = mMovieList.results.get(position);
+
         Picasso
                 .with(holder.mMoviePosterImageView.getContext())
-                .load(mMovieList[position])
+                .load(movie.getPosterPath())
                 .into(holder.mMoviePosterImageView);
     }
 
@@ -41,7 +47,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
             return 0;
         }
 
-        return mMovieList.length;
+        return mMovieList.results.size();
     }
 
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder {
@@ -61,7 +67,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      *
      * @param movieData The new weather data to be displayed.
      */
-    public void setMovieData(String[] movieData) {
+    public void setMovieData(MovieList movieData) {
         mMovieList = movieData;
         notifyDataSetChanged();
     }

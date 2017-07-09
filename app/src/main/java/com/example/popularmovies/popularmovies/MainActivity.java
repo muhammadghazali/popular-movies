@@ -1,5 +1,6 @@
 package com.example.popularmovies.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -12,12 +13,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.popularmovies.popularmovies.models.MovieList;
 import com.example.popularmovies.popularmovies.utilities.NetworkUtils;
-import com.example.popularmovies.popularmovies.utilities.OpenWeatherJsonUtils;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String[]> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<MovieList> {
 
     private static final int FORECAST_LOADER_ID = 0;
     private RecyclerView mMoviesRecyclerView;
@@ -47,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         int loaderId = FORECAST_LOADER_ID;
 
-        LoaderManager.LoaderCallbacks<String[]> callback = MainActivity.this;
+        LoaderManager.LoaderCallbacks<MovieList> callback = MainActivity.this;
 
         Bundle bundleForLoader = null;
 
@@ -77,12 +80,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<String[]> onCreateLoader(int id, final Bundle loaderArgs) {
+    public Loader<MovieList> onCreateLoader(int id, final Bundle loaderArgs) {
 
-        return new AsyncTaskLoader<String[]>(this) {
+        return new AsyncTaskLoader<MovieList>(this) {
 
             /* This String array will hold and help cache our weather data */
-            String[] mMoviesData = null;
+            MovieList movieList = null;
 
             // COMPLETED (3) Cache the weather data in a member variable and deliver it in onStartLoading.
 
@@ -91,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
              */
             @Override
             protected void onStartLoading() {
-                if (mMoviesData != null) {
-                    deliverResult(mMoviesData);
+                if (movieList != null) {
+                    deliverResult(movieList);
                 } else {
                     mLoadingIndicator.setVisibility(View.VISIBLE);
                     forceLoad();
@@ -107,21 +110,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
              *         null if an error occurs
              */
             @Override
-            public String[] loadInBackground() {
-                // TODO load the api key from the res/values.xml
-                URL requestUrl = NetworkUtils.buildUrl("e9fc82cee13f0ec75672adb52a8ec7e8");
+            public MovieList loadInBackground() {
+                URL requestUrl = NetworkUtils
+                        .buildUrl(getContext().getString(R.string.THE_MOVIE_DB_API_TOKEN));
 
                 try {
                     String jsonResponse = NetworkUtils
                             .getResponseFromHttpUrl(requestUrl);
 
-                    String[] simpleJsonWeatherData = OpenWeatherJsonUtils
-                            .getSimpleWeatherStringsFromJson(MainActivity.this, jsonWeatherResponse);
+                    Moshi moshi = new Moshi.Builder().build();
+                    JsonAdapter<MovieList> jsonAdapter = moshi.adapter(MovieList.class);
 
-//                    TODO populate the json response
-                    String[] test = {"hello", "world"};
+                    movieList = jsonAdapter.fromJson(jsonResponse);
 
-                    return test;
+                    return movieList;
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -133,15 +135,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
              *
              * @param data The result of the load
              */
-            public void deliverResult(String[] data) {
-                mMoviesData = data;
+            public void deliverResult(MovieList data) {
+                movieList = data;
                 super.deliverResult(data);
             }
         };
     }
 
     @Override
-    public void onLoadFinished(Loader<String[]> loader, String[] data) {
+    public void onLoadFinished(Loader<MovieList> loader, MovieList data) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         mMoviePosterAdapter.setMovieData(data);
         if (null == data) {
@@ -152,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onLoaderReset(Loader<String[]> loader) {
+    public void onLoaderReset(Loader<MovieList> loader) {
 
     }
 }
