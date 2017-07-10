@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.popularmovies.popularmovies.data.PopularMoviesPreferences;
 import com.example.popularmovies.popularmovies.models.Movie;
 import com.example.popularmovies.popularmovies.models.MovieList;
 import com.example.popularmovies.popularmovies.utilities.NetworkUtils;
@@ -158,8 +159,6 @@ public class MainActivity extends AppCompatActivity implements
             /* This String array will hold and help cache our weather data */
             MovieList movieList = null;
 
-            // COMPLETED (3) Cache the weather data in a member variable and deliver it in onStartLoading.
-
             /**
              * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
              */
@@ -182,8 +181,11 @@ public class MainActivity extends AppCompatActivity implements
              */
             @Override
             public MovieList loadInBackground() {
+                String sortOption = PopularMoviesPreferences
+                        .getSortOption(MainActivity.this);
+
                 URL requestUrl = NetworkUtils
-                        .buildUrl(getContext().getString(R.string.THE_MOVIE_DB_API_TOKEN));
+                        .buildUrl(getContext().getString(R.string.THE_MOVIE_DB_API_TOKEN), sortOption);
 
                 try {
                     String jsonResponse = NetworkUtils

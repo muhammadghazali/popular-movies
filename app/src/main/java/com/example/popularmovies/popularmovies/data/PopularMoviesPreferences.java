@@ -13,20 +13,14 @@ public class PopularMoviesPreferences {
      * @param context Context used to get the SharedPreferences
      * @return true If metric display should be used
      */
-    public static boolean isSort(Context context) {
+    public static String getSortOption(Context context) {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
         String keyForSort = context.getString(R.string.pref_sort_key);
         String defaultSortOption = context.getString(R.string.pref_sort_popular);
         String preferredSortOption = prefs.getString(keyForSort, defaultSortOption);
-        String sortOptions = context.getString(R.string.pref_sort_key);
+//        String sortOptions = context.getString(R.string.pref_sort_key);
 
-        boolean userPrefersMetric;
-        if (sortOptions.equals(preferredSortOption)) {
-            userPrefersMetric = true;
-        } else {
-            userPrefersMetric = false;
-        }
-        return userPrefersMetric;
+        return preferredSortOption;
     }
 }

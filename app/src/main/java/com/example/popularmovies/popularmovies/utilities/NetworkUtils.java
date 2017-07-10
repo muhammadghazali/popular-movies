@@ -27,8 +27,11 @@ public final class NetworkUtils {
      * @param apiKey The location that will be queried for.
      * @return The URL to use to query the weather server.
      */
-    public static URL buildUrl(String apiKey) {
-        Uri builtUri = Uri.parse(POPULAR_MOVIE_URL).buildUpon()
+    public static URL buildUrl(String apiKey, String sortOptions) {
+        String apiUrl = (sortOptions.equals("popular")) ?
+                POPULAR_MOVIE_URL : TOP_RATED_MOVIE_URL;
+
+        Uri builtUri = Uri.parse(apiUrl).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, apiKey)
                 .build();
 
