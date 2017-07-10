@@ -1,5 +1,6 @@
 package com.example.popularmovies.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.popularmovies.popularmovies.models.Movie;
 import com.example.popularmovies.popularmovies.models.MovieList;
 import com.example.popularmovies.popularmovies.utilities.NetworkUtils;
 import com.squareup.moshi.JsonAdapter;
@@ -25,7 +27,10 @@ import com.squareup.moshi.Moshi;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<MovieList>, SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<MovieList>,
+        MoviePosterAdapter.MoviePosterAdapterOnClickHandler,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int FORECAST_LOADER_ID = 0;
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
@@ -49,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mMoviesRecyclerView.setLayoutManager(gridLayoutManager);
         mMoviesRecyclerView.setHasFixedSize(true);
 
-        mMoviePosterAdapter = new MoviePosterAdapter();
+        mMoviePosterAdapter = new MoviePosterAdapter(this);
         mMoviesRecyclerView.setAdapter(mMoviePosterAdapter);
 
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
@@ -86,6 +91,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void showMovieDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mMoviesRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(Movie movie) {
+        Context context = this;
+        Class destinationClass = MovieDetailActivity.class;
+        Intent intentToStartDetailActivity = new Intent(context, destinationClass);
+        // TODO send the extra data as JSON string
+//        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, movie);
+        startActivity(intentToStartDetailActivity);
     }
 
     /**
