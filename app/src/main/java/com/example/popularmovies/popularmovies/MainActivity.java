@@ -98,8 +98,11 @@ public class MainActivity extends AppCompatActivity implements
         Context context = this;
         Class destinationClass = MovieDetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        // TODO send the extra data as JSON string
-//        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, movie);
+        Moshi moshi = new Moshi.Builder().build();
+        JsonAdapter<Movie> jsonAdapter = moshi.adapter(Movie.class);
+
+        String json = jsonAdapter.toJson(movie);
+        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, json);
         startActivity(intentToStartDetailActivity);
     }
 
