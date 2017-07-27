@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements
         MoviePosterAdapter.MoviePosterAdapterOnClickHandler,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int FORECAST_LOADER_ID = 0;
+    private static final int MOVIES_LOADER_ID = 0;
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements
         mMoviePosterAdapter = new MoviePosterAdapter(this);
         mMoviesRecyclerView.setAdapter(mMoviePosterAdapter);
 
-        int loaderId = FORECAST_LOADER_ID;
+        int loaderId = MOVIES_LOADER_ID;
 
         LoaderManager.LoaderCallbacks<MovieList> callback = MainActivity.this;
 
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         if (PREFERENCES_HAVE_BEEN_UPDATED) {
             Log.d(TAG, "onStart: preferences were updated");
-            getSupportLoaderManager().restartLoader(FORECAST_LOADER_ID, null, this);
+            getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
             PREFERENCES_HAVE_BEEN_UPDATED = false;
         }
     }

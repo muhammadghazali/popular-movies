@@ -98,11 +98,11 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     }
 
     /**
-     * This method is used to set the weather forecast on a ForecastAdapter if we've already
+     * This method is used to set the weather movie on a {@link MoviePosterAdapter} if we've already
      * created one. This is handy when we get new data from the web but don't want to create a
-     * new ForecastAdapter to display it.
+     * new MoviePosterAdapter to display it.
      *
-     * @param movieData The new weather data to be displayed.
+     * @param movieData The new movie data to be displayed.
      */
     public void setMovieData(MovieList movieData) {
         mMovieList = movieData;
