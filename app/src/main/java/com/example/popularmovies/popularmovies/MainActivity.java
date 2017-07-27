@@ -28,6 +28,9 @@ import com.squareup.moshi.Moshi;
 
 import java.net.URL;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<MovieList>,
         MoviePosterAdapter.MoviePosterAdapterOnClickHandler,
@@ -37,19 +40,22 @@ public class MainActivity extends AppCompatActivity implements
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private RecyclerView mMoviesRecyclerView;
+    @BindView(R.id.rv_movie_list)
+    RecyclerView mMoviesRecyclerView;
     private MoviePosterAdapter mMoviePosterAdapter;
 
-    private TextView mErrorMessageDisplay;
+    @BindView(R.id.tv_error_message_display)
+    TextView mErrorMessageDisplay;
 
-    private ProgressBar mLoadingIndicator;
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar mLoadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMoviesRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_list);
+        ButterKnife.bind(this);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mMoviesRecyclerView.setLayoutManager(gridLayoutManager);
@@ -57,10 +63,6 @@ public class MainActivity extends AppCompatActivity implements
 
         mMoviePosterAdapter = new MoviePosterAdapter(this);
         mMoviesRecyclerView.setAdapter(mMoviePosterAdapter);
-
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
-
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
         int loaderId = FORECAST_LOADER_ID;
 

@@ -13,25 +13,35 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
+import butterknife.BindDimen;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     private String mForecast;
-    private TextView mOriginalTitle;
-    private TextView mOverview;
-    private TextView mAvarageRate;
-    private TextView mReleaseDate;
-    private ImageView mMoviePosterImageView;
+
+    @BindView(R.id.tv_original_title)
+    TextView mOriginalTitle;
+
+    @BindView(R.id.tv_overview)
+    TextView mOverview;
+
+    @BindView(R.id.tv_avarage_rate)
+    TextView mAvarageRate;
+
+    @BindView(R.id.tv_release_date)
+    TextView mReleaseDate;
+
+    @BindView(R.id.movie_poster_img)
+    ImageView mMoviePosterImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        mOriginalTitle = (TextView) findViewById(R.id.tv_original_title);
-        mMoviePosterImageView = (ImageView) findViewById(R.id.movie_poster_img);
-        mOverview = (TextView) findViewById(R.id.tv_overview);
-        mAvarageRate = (TextView) findViewById(R.id.tv_avarage_rate);
-        mReleaseDate = (TextView) findViewById(R.id.tv_release_date);
+        ButterKnife.bind(this);
 
         Intent intentThatStartedThisActivity = getIntent();
 

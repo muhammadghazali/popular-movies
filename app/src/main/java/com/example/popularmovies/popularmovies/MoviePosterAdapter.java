@@ -1,9 +1,7 @@
 package com.example.popularmovies.popularmovies;
 
 import android.content.Context;
-
-import com.example.popularmovies.popularmovies.models.Movie;
-
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +9,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.popularmovies.popularmovies.models.Movie;
 import com.example.popularmovies.popularmovies.models.MovieList;
 import com.squareup.picasso.Picasso;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.MoviePosterAdapterViewHolder> {
     private MovieList mMovieList = null;
@@ -75,12 +77,15 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     }
 
     public class MoviePosterAdapterViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
-        public final ImageView mMoviePosterImageView;
+        @Nullable
+        @BindView(R.id.movie_poster_img)
+        ImageView mMoviePosterImageView;
 
         public MoviePosterAdapterViewHolder(View itemView) {
             super(itemView);
 
-            mMoviePosterImageView = (ImageView) itemView.findViewById(R.id.movie_poster_img);
+            ButterKnife.bind(this, itemView);
+
             itemView.setOnClickListener(this);
         }
 
