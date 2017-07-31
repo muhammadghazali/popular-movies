@@ -41,5 +41,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.7.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
     compile 'joda-time:joda-time:2.9.9'
+    compile 'com.facebook.stetho:stetho:1.5.0'
     testCompile 'junit:junit:4.12'
 }
