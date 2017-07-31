@@ -153,10 +153,8 @@ public class MovieDetailActivity extends AppCompatActivity {
             Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
 
             if (uri != null) {
-                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "Movie added to favorites", Toast.LENGTH_LONG).show();
             }
-
-            finish();
 
             return true;
         }
