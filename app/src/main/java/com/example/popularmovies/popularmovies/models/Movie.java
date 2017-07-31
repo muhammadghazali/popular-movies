@@ -48,4 +48,8 @@ public class Movie {
 
         return dt.toString(displayFormat);
     }
+
+    public int getId() {
+        return id;
+    }
 }

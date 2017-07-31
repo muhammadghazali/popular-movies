@@ -72,69 +72,6 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        int loaderId = MOVIE_TRAILERS_LOADER_ID;
-
-        trailerListLoaderCallback = new LoaderManager.LoaderCallbacks<TrailerList>() {
-            @Override
-            public Loader<TrailerList> onCreateLoader(int id, Bundle args) {
-                return new AsyncTaskLoader<TrailerList>(MovieDetailActivity.this) {
-
-
-                    @Override
-                    protected void onStartLoading() {
-                        if (mTrailerList != null) {
-                            deliverResult(mTrailerList);
-                        }
-
-//                        TODO display the loading indicator
-                        forceLoad();
-                    }
-
-                    @Override
-                    public TrailerList loadInBackground() {
-                        URL requestUrl = NetworkUtils
-                                .buildTrailersUrl(getContext().getString(R.string.THE_MOVIE_DB_API_TOKEN), 321612);
-
-                        try {
-                            String jsonResponse = NetworkUtils
-                                    .getResponseFromHttpUrl(requestUrl);
-
-                            Moshi moshi = new Moshi.Builder().build();
-                            JsonAdapter<TrailerList> jsonAdapter = moshi.adapter(TrailerList.class);
-
-                            mTrailerList = jsonAdapter.fromJson(jsonResponse);
-
-                            return mTrailerList;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-
-                    @Override
-                    public void deliverResult(TrailerList data) {
-                        mTrailerList = data;
-                        super.deliverResult(data);
-                    }
-                };
-            }
-
-            @Override
-            public void onLoadFinished(Loader<TrailerList> loader, TrailerList data) {
-//                TODO hide the progress indicator
-//                TODO list the trailers on the view
-            }
-
-            @Override
-            public void onLoaderReset(Loader<TrailerList> loader) {
-
-            }
-        };
-
-        Bundle bundleForLoader = null;
-
-        getSupportLoaderManager().initLoader(loaderId, bundleForLoader, trailerListLoaderCallback);
-
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
@@ -161,6 +98,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                 mOverview.setText(movie.getOverview());
                 mAvarageRate.setText(movie.getVoteAverage());
                 mReleaseDate.setText(movie.getReleaseDate());
+
+                int loaderId = MOVIE_TRAILERS_LOADER_ID;
+
+                trailerListLoaderCallback = new TrailerListLoaderCallbacks(movie.getId());
+
+                Bundle bundleForLoader = null;
+
+                getSupportLoaderManager().initLoader(loaderId, bundleForLoader, trailerListLoaderCallback);
 
                 mTrailer1.loadThumbnail("https://www.youtube.com/watch?v=iCkYw3cRwLo", new ImageLoader() {
                     @Override
@@ -191,6 +136,69 @@ public class MovieDetailActivity extends AppCompatActivity {
                 });
 
             }
+        }
+    }
+
+    private class TrailerListLoaderCallbacks implements LoaderManager.LoaderCallbacks<TrailerList> {
+        private int mMovieId;
+
+        public TrailerListLoaderCallbacks(int movieId) {
+            mMovieId = movieId;
+        }
+
+        @Override
+        public Loader<TrailerList> onCreateLoader(int id, Bundle args) {
+            return new AsyncTaskLoader<TrailerList>(MovieDetailActivity.this) {
+
+
+                @Override
+                protected void onStartLoading() {
+                    if (mTrailerList != null) {
+                        deliverResult(mTrailerList);
+                    }
+
+//                        TODO display the loading indicator
+                    forceLoad();
+                }
+
+                @Override
+                public TrailerList loadInBackground() {
+                    URL requestUrl = NetworkUtils
+                            .buildTrailersUrl(getContext().getString(R.string.THE_MOVIE_DB_API_TOKEN), mMovieId);
+
+                    try {
+                        String jsonResponse = NetworkUtils
+                                .getResponseFromHttpUrl(requestUrl);
+
+                        Moshi moshi = new Moshi.Builder().build();
+                        JsonAdapter<TrailerList> jsonAdapter = moshi.adapter(TrailerList.class);
+
+                        mTrailerList = jsonAdapter.fromJson(jsonResponse);
+
+                        return mTrailerList;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+
+                @Override
+                public void deliverResult(TrailerList data) {
+                    mTrailerList = data;
+                    super.deliverResult(data);
+                }
+            };
+        }
+
+        @Override
+        public void onLoadFinished(Loader<TrailerList> loader, TrailerList data) {
+//                TODO hide the progress indicator
+//                TODO list the trailers on the view
+        }
+
+        @Override
+        public void onLoaderReset(Loader<TrailerList> loader) {
+
         }
     }
 }
