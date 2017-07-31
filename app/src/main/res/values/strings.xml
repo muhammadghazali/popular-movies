@@ -18,4 +18,5 @@
     <string name="release_date">Release date</string>
     <string name="user_rating">User rating</string>
     <string name="plot_synopsis">Plot Synopsis</string>
+    <string name="trailers">Trailers</string>
 </resources>

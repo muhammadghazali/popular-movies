@@ -30,6 +30,9 @@
                 android:value=".MainActivity" />
         </activity>
         <activity android:name=".SettingsActivity"></activity>
+
+        <meta-data android:name="com.codewaves.youtubethumbnailview.ApiKey"
+            android:value="@string/GOOGLE_API_KEY" />
     </application>
 
 </manifest>
