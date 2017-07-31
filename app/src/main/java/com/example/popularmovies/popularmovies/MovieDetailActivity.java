@@ -1,12 +1,16 @@
 package com.example.popularmovies.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,6 +19,7 @@ import com.codewaves.youtubethumbnailview.ImageLoader;
 import com.codewaves.youtubethumbnailview.ThumbnailLoader;
 import com.codewaves.youtubethumbnailview.ThumbnailView;
 import com.example.popularmovies.popularmovies.models.Movie;
+import com.example.popularmovies.popularmovies.models.Trailer;
 import com.example.popularmovies.popularmovies.models.TrailerList;
 import com.example.popularmovies.popularmovies.utilities.NetworkUtils;
 import com.squareup.moshi.JsonAdapter;
@@ -48,15 +53,6 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.movie_poster_img)
     ImageView mMoviePosterImageView;
-
-    @BindView(R.id.trailer_1)
-    ThumbnailView mTrailer1;
-
-    @BindView(R.id.trailer_2)
-    ThumbnailView mTrailer2;
-
-    @BindView(R.id.trailer_3)
-    ThumbnailView mTrailer3;
 
     @BindView(R.id.trailers_list_section)
     LinearLayout trailersListSection;
@@ -106,36 +102,18 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Bundle bundleForLoader = null;
 
                 getSupportLoaderManager().initLoader(loaderId, bundleForLoader, trailerListLoaderCallback);
-
-                mTrailer1.loadThumbnail("https://www.youtube.com/watch?v=iCkYw3cRwLo", new ImageLoader() {
-                    @Override
-                    public Bitmap load(String url) throws IOException {
-                        return Picasso.with(MovieDetailActivity.this).load(url).get();
-                    }
-                });
-
-                mTrailer1.loadThumbnail("https://www.youtube.com/watch?v=Ow78zp30ioE", new ImageLoader() {
-                    @Override
-                    public Bitmap load(String url) throws IOException {
-                        return Picasso.with(MovieDetailActivity.this).load(url).get();
-                    }
-                });
-
-                mTrailer2.loadThumbnail("https://www.youtube.com/watch?v=Sq8vjBg7EWE", new ImageLoader() {
-                    @Override
-                    public Bitmap load(String url) throws IOException {
-                        return Picasso.with(MovieDetailActivity.this).load(url).get();
-                    }
-                });
-
-                mTrailer3.loadThumbnail("https://www.youtube.com/watch?v=MKyp9Tx-NPY", new ImageLoader() {
-                    @Override
-                    public Bitmap load(String url) throws IOException {
-                        return Picasso.with(MovieDetailActivity.this).load(url).get();
-                    }
-                });
-
             }
+        }
+    }
+
+    public void watchYoutubeVideo(String id) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
         }
     }
 
@@ -193,7 +171,29 @@ public class MovieDetailActivity extends AppCompatActivity {
         @Override
         public void onLoadFinished(Loader<TrailerList> loader, TrailerList data) {
 //                TODO hide the progress indicator
-//                TODO list the trailers on the view
+            for (Trailer trailer : mTrailerList.results) {
+                ThumbnailView thumbnailView = new ThumbnailView(getApplicationContext());
+                thumbnailView.setTag(String.valueOf(trailer.getKey()));
+
+                ThumbnailView.LayoutParams layoutParams = new ThumbnailView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        640);
+                thumbnailView.setLayoutParams(layoutParams);
+
+                thumbnailView.loadThumbnail("https://www.youtube.com/watch?v=" + trailer.getKey(), new ImageLoader() {
+                    @Override
+                    public Bitmap load(String url) throws IOException {
+                        return Picasso.with(MovieDetailActivity.this).load(url).get();
+                    }
+                });
+                thumbnailView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        watchYoutubeVideo(view.getTag().toString());
+                    }
+                });
+
+                trailersListSection.addView(thumbnailView);
+            }
         }
 
         @Override
