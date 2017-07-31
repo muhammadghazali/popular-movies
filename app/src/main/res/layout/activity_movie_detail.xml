@@ -89,12 +89,35 @@
             android:id="@+id/trailers_list_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp" />
+
+        <TextView
+            android:id="@+id/tv_user_reviews_label"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="@string/reviews" />
+
+        <TextView
+            android:id="@+id/tv_no_user_reviews_yet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="No reviews yet."
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/user_reviews_list_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp" />
 
     </LinearLayout>
 </ScrollView>
