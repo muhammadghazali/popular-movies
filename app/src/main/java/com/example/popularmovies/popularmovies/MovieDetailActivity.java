@@ -1,6 +1,7 @@
 package com.example.popularmovies.popularmovies;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -18,10 +19,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codewaves.youtubethumbnailview.ImageLoader;
 import com.codewaves.youtubethumbnailview.ThumbnailLoader;
 import com.codewaves.youtubethumbnailview.ThumbnailView;
+import com.example.popularmovies.popularmovies.data.MovieContract;
 import com.example.popularmovies.popularmovies.models.Movie;
 import com.example.popularmovies.popularmovies.models.Review;
 import com.example.popularmovies.popularmovies.models.Trailer;
@@ -42,7 +45,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private static final int MOVIE_TRAILERS_LOADER_ID = 1;
     private static final int MOVIE_USER_REVIEWS_LOADER_ID = 2;
-    private String mForecast;
+    private Movie mMovie;
 
     TrailerList mTrailerList = null;
     UserReviewList mUserReviewList = null;
@@ -87,34 +90,33 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
-                mForecast = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
+                String movieInJson = intentThatStartedThisActivity.getStringExtra(Intent.EXTRA_TEXT);
 
                 Moshi moshi = new Moshi.Builder().build();
                 JsonAdapter<Movie> jsonAdapter = moshi.adapter(Movie.class);
-                Movie movie = null;
 
                 try {
-                    movie = jsonAdapter.fromJson(mForecast);
+                    mMovie = jsonAdapter.fromJson(movieInJson);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                mOriginalTitle.setText(movie.getOriginalTitle());
+                mOriginalTitle.setText(mMovie.getOriginalTitle());
 
                 Picasso
                         .with(this)
-                        .load(movie.getPosterPath())
+                        .load(mMovie.getPosterPath())
                         .into(mMoviePosterImageView);
 
-                mOverview.setText(movie.getOverview());
-                mAvarageRate.setText(movie.getVoteAverage());
-                mReleaseDate.setText(movie.getReleaseDate());
+                mOverview.setText(mMovie.getOverview());
+                mAvarageRate.setText(mMovie.getVoteAverage());
+                mReleaseDate.setText(mMovie.getReleaseDate());
 
                 int trailersLoaderId = MOVIE_TRAILERS_LOADER_ID;
                 int userReviewsLoaderId = MOVIE_USER_REVIEWS_LOADER_ID;
 
-                trailerListLoaderCallback = new TrailerListLoaderCallbacks(movie.getId());
-                userReviewListLoaderCallback = new UserReviewsListLoaderCallbacks(movie.getId());
+                trailerListLoaderCallback = new TrailerListLoaderCallbacks(mMovie.getId());
+                userReviewListLoaderCallback = new UserReviewsListLoaderCallbacks(mMovie.getId());
 
                 Bundle bundleForLoader = null;
 
@@ -140,9 +142,24 @@ public class MovieDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // TODO handle the favorite action
-        // TODO handle the unfavorite action
+        if (id == R.id.action_favorite) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER, mMovie.getPosterPath());
+            contentValues.put(MovieContract.MovieEntry.COLUMN_SYSNOPSIS, mMovie.getOverview());
+            contentValues.put(MovieContract.MovieEntry.COLUMN_USER_RATING, mMovie.getVoteAverage());
+            contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate());
 
+            Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
+            if (uri != null) {
+                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+            }
+
+            finish();
+
+            return true;
+        }
+        // TODO handle the unfavorite action
         return super.onOptionsItemSelected(item);
     }
 
