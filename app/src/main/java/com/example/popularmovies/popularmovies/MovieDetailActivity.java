@@ -3,6 +3,9 @@ package com.example.popularmovies.popularmovies;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,18 +15,24 @@ import com.codewaves.youtubethumbnailview.ImageLoader;
 import com.codewaves.youtubethumbnailview.ThumbnailLoader;
 import com.codewaves.youtubethumbnailview.ThumbnailView;
 import com.example.popularmovies.popularmovies.models.Movie;
+import com.example.popularmovies.popularmovies.models.TrailerList;
+import com.example.popularmovies.popularmovies.utilities.NetworkUtils;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
+    private static final int MOVIE_TRAILERS_LOADER_ID = 1;
     private String mForecast;
+
+    TrailerList mTrailerList = null;
 
     @BindView(R.id.tv_original_title)
     TextView mOriginalTitle;
@@ -52,6 +61,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.trailers_list_section)
     LinearLayout trailersListSection;
 
+    private LoaderManager.LoaderCallbacks<TrailerList> trailerListLoaderCallback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +71,69 @@ public class MovieDetailActivity extends AppCompatActivity {
         ThumbnailLoader.initialize(getApplicationContext());
 
         ButterKnife.bind(this);
+
+        int loaderId = MOVIE_TRAILERS_LOADER_ID;
+
+        trailerListLoaderCallback = new LoaderManager.LoaderCallbacks<TrailerList>() {
+            @Override
+            public Loader<TrailerList> onCreateLoader(int id, Bundle args) {
+                return new AsyncTaskLoader<TrailerList>(MovieDetailActivity.this) {
+
+
+                    @Override
+                    protected void onStartLoading() {
+                        if (mTrailerList != null) {
+                            deliverResult(mTrailerList);
+                        }
+
+//                        TODO display the loading indicator
+                        forceLoad();
+                    }
+
+                    @Override
+                    public TrailerList loadInBackground() {
+                        URL requestUrl = NetworkUtils
+                                .buildTrailersUrl(getContext().getString(R.string.THE_MOVIE_DB_API_TOKEN), 321612);
+
+                        try {
+                            String jsonResponse = NetworkUtils
+                                    .getResponseFromHttpUrl(requestUrl);
+
+                            Moshi moshi = new Moshi.Builder().build();
+                            JsonAdapter<TrailerList> jsonAdapter = moshi.adapter(TrailerList.class);
+
+                            mTrailerList = jsonAdapter.fromJson(jsonResponse);
+
+                            return mTrailerList;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    public void deliverResult(TrailerList data) {
+                        mTrailerList = data;
+                        super.deliverResult(data);
+                    }
+                };
+            }
+
+            @Override
+            public void onLoadFinished(Loader<TrailerList> loader, TrailerList data) {
+//                TODO hide the progress indicator
+//                TODO list the trailers on the view
+            }
+
+            @Override
+            public void onLoaderReset(Loader<TrailerList> loader) {
+
+            }
+        };
+
+        Bundle bundleForLoader = null;
+
+        getSupportLoaderManager().initLoader(loaderId, bundleForLoader, trailerListLoaderCallback);
 
         Intent intentThatStartedThisActivity = getIntent();
 
