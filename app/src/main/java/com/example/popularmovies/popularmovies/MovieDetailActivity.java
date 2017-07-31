@@ -57,6 +57,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.trailers_list_section)
     LinearLayout trailersListSection;
 
+    @BindView(R.id.user_reviews_list_section)
+    LinearLayout userReviewsListSection;
+
     private LoaderManager.LoaderCallbacks<TrailerList> trailerListLoaderCallback;
 
     @Override
