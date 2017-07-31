@@ -74,6 +74,30 @@ public final class NetworkUtils {
     }
 
     /**
+     * Build the URL that match the following form movie/{movie_id}/reviews
+     *
+     * @param apiKey
+     * @return
+     */
+    public static URL buildUserReviewsUrl(String apiKey, int movieId) {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath("movie")
+                .appendPath(String.valueOf(movieId))
+                .appendPath("reviews")
+                .appendQueryParameter(API_KEY_PARAM, apiKey)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    /**
      * This method returns the entire result from the HTTP response.
      *
      * @param url The URL to fetch the HTTP response from.
