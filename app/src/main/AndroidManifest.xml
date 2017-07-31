@@ -37,7 +37,7 @@
 
         <provider
             android:name=".data.MovieContentProvider"
-            android:authorities="com.example.android.todolist"
+            android:authorities="com.example.popularmovies.popularmovies"
             android:exported="false" />
     </application>
 
