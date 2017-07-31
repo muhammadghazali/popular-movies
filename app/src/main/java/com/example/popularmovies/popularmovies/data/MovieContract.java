@@ -10,5 +10,6 @@ public class MovieContract {
         public static final String COLUMN_SYSNOPSIS = "sysnopsis";
         public static final String COLUMN_USER_RATING = "user_rating";
         public static final String COLUMN_RELEASE_DATE = "release_date";
+        public static final String COLUMN_FAVORITE = "favorite";
     }
 }
