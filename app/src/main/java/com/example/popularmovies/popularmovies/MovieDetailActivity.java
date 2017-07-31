@@ -148,6 +148,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             contentValues.put(MovieContract.MovieEntry.COLUMN_SYSNOPSIS, mMovie.getOverview());
             contentValues.put(MovieContract.MovieEntry.COLUMN_USER_RATING, mMovie.getVoteAverage());
             contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate());
+            contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, 1);
 
             Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
 
