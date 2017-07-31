@@ -31,8 +31,14 @@
         </activity>
         <activity android:name=".SettingsActivity"></activity>
 
-        <meta-data android:name="com.codewaves.youtubethumbnailview.ApiKey"
+        <meta-data
+            android:name="com.codewaves.youtubethumbnailview.ApiKey"
             android:value="@string/GOOGLE_API_KEY" />
+
+        <provider
+            android:name=".data.MovieContentProvider"
+            android:authorities="com.example.android.todolist"
+            android:exported="false" />
     </application>
 
 </manifest>
