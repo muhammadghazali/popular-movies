@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -74,6 +75,109 @@
             android:layout_height="wrap_content"
             android:paddingBottom="4dp"
             android:paddingTop="4dp" />
+
+        <TextView
+            android:id="@+id/tv_trailers_label"
+            style="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="@string/trailers" />
+
+        <LinearLayout
+            android:id="@+id/trailers_list_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.codewaves.youtubethumbnailview.ThumbnailView
+                android:id="@+id/trailer_1"
+                android:layout_width="320dp"
+                android:layout_height="180dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/black"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:youtube_minThumbnailWidth="320"
+                app:youtube_timeBackgroundColor="#80000000"
+                app:youtube_timeColor="@android:color/white"
+                app:youtube_timeMarginBottom="10dp"
+                app:youtube_timeMarginRight="10dp"
+                app:youtube_timePaddingBottom="0dp"
+                app:youtube_timePaddingLeft="5dp"
+                app:youtube_timePaddingRight="5dp"
+                app:youtube_timePaddingTop="0dp"
+                app:youtube_timeTextSize="14sp"
+                app:youtube_timeVisible="true"
+                app:youtube_titleBackgroundColor="#80000000"
+                app:youtube_titleColor="@android:color/white"
+                app:youtube_titleMaxLines="1"
+                app:youtube_titlePaddingBottom="5dp"
+                app:youtube_titlePaddingLeft="10dp"
+                app:youtube_titlePaddingRight="10dp"
+                app:youtube_titlePaddingTop="5dp"
+                app:youtube_titleTextSize="14sp"
+                app:youtube_titleVisible="true" />
+
+            <com.codewaves.youtubethumbnailview.ThumbnailView
+                android:id="@+id/trailer_2"
+                android:layout_width="320dp"
+                android:layout_height="180dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/black"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:youtube_minThumbnailWidth="320"
+                app:youtube_timeBackgroundColor="#80000000"
+                app:youtube_timeColor="@android:color/white"
+                app:youtube_timeMarginBottom="10dp"
+                app:youtube_timeMarginRight="10dp"
+                app:youtube_timePaddingBottom="0dp"
+                app:youtube_timePaddingLeft="5dp"
+                app:youtube_timePaddingRight="5dp"
+                app:youtube_timePaddingTop="0dp"
+                app:youtube_timeTextSize="14sp"
+                app:youtube_timeVisible="true"
+                app:youtube_titleBackgroundColor="#80000000"
+                app:youtube_titleColor="@android:color/white"
+                app:youtube_titleMaxLines="1"
+                app:youtube_titlePaddingBottom="5dp"
+                app:youtube_titlePaddingLeft="10dp"
+                app:youtube_titlePaddingRight="10dp"
+                app:youtube_titlePaddingTop="5dp"
+                app:youtube_titleTextSize="14sp"
+                app:youtube_titleVisible="true" />
+
+            <com.codewaves.youtubethumbnailview.ThumbnailView
+                android:id="@+id/trailer_3"
+                android:layout_width="320dp"
+                android:layout_height="180dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/black"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:youtube_minThumbnailWidth="320"
+                app:youtube_timeBackgroundColor="#80000000"
+                app:youtube_timeColor="@android:color/white"
+                app:youtube_timeMarginBottom="10dp"
+                app:youtube_timeMarginRight="10dp"
+                app:youtube_timePaddingBottom="0dp"
+                app:youtube_timePaddingLeft="5dp"
+                app:youtube_timePaddingRight="5dp"
+                app:youtube_timePaddingTop="0dp"
+                app:youtube_timeTextSize="14sp"
+                app:youtube_timeVisible="true"
+                app:youtube_titleBackgroundColor="#80000000"
+                app:youtube_titleColor="@android:color/white"
+                app:youtube_titleMaxLines="1"
+                app:youtube_titlePaddingBottom="5dp"
+                app:youtube_titlePaddingLeft="10dp"
+                app:youtube_titlePaddingRight="10dp"
+                app:youtube_titlePaddingTop="5dp"
+                app:youtube_titleTextSize="14sp"
+                app:youtube_titleVisible="true" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
