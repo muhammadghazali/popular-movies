@@ -4,6 +4,7 @@ Popular Movies App for Udacity course
 
 # Setup
 
-## Configure Movie Database API key
+## Configure API keys
 
-- set the API key on the following resource file `/res/values/api_keys_example.xml`
+- set the Movie Database  API key on the following resource file `/res/values/api_keys_example.xml`
+- set the Google API key on the following resource file `/res/values/api_keys_example.xml`
