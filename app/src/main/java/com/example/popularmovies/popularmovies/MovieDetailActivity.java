@@ -10,6 +10,9 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -119,6 +122,28 @@ public class MovieDetailActivity extends AppCompatActivity {
                 getSupportLoaderManager().initLoader(userReviewsLoaderId, bundleForLoader, userReviewListLoaderCallback);
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // TODO conditionally display the favorite icon
+        // display ic_star if the movie is in the favorite list
+        // display ic_star_border if the movie is not in the favorite list
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.details, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        // TODO handle the favorite action
+        // TODO handle the unfavorite action
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void watchYoutubeVideo(String id) {
