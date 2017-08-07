@@ -1,8 +1,12 @@
 package com.example.popularmovies.popularmovies;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -19,9 +23,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.popularmovies.popularmovies.data.MovieContract;
+import com.example.popularmovies.popularmovies.data.MovieDbHelper;
 import com.example.popularmovies.popularmovies.data.PopularMoviesPreferences;
 import com.example.popularmovies.popularmovies.models.Movie;
 import com.example.popularmovies.popularmovies.models.MovieList;
+import com.example.popularmovies.popularmovies.models.Review;
 import com.example.popularmovies.popularmovies.utilities.NetworkUtils;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -42,7 +49,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @BindView(R.id.rv_movie_list)
     RecyclerView mMoviesRecyclerView;
+
     private MoviePosterAdapter mMoviePosterAdapter;
+
+    private SQLiteDatabase mDb;
 
     @BindView(R.id.tv_error_message_display)
     TextView mErrorMessageDisplay;
@@ -61,7 +71,15 @@ public class MainActivity extends AppCompatActivity implements
         mMoviesRecyclerView.setLayoutManager(gridLayoutManager);
         mMoviesRecyclerView.setHasFixedSize(true);
 
-        mMoviePosterAdapter = new MoviePosterAdapter(this);
+        MovieDbHelper dbHelper = new MovieDbHelper(this);
+
+        // Keep a reference to the mDb until paused or killed. Get a writable database
+        // because you will be adding restaurant customers
+        mDb = dbHelper.getWritableDatabase();
+
+        Cursor cursor = null;
+
+        mMoviePosterAdapter = new MoviePosterAdapter(this, cursor);
         mMoviesRecyclerView.setAdapter(mMoviePosterAdapter);
 
         int loaderId = MOVIES_LOADER_ID;
@@ -158,12 +176,8 @@ public class MainActivity extends AppCompatActivity implements
 
         return new AsyncTaskLoader<MovieList>(this) {
 
-            /* This String array will hold and help cache our weather data */
             MovieList movieList = null;
 
-            /**
-             * Subclasses of AsyncTaskLoader must implement this to take care of loading their data.
-             */
             @Override
             protected void onStartLoading() {
                 if (movieList != null) {
@@ -212,9 +226,37 @@ public class MainActivity extends AppCompatActivity implements
              */
             public void deliverResult(MovieList data) {
                 movieList = data;
+
+                ContentValues[] movieContentValues = createBulkInsertMovieValues(data);
+                ContentResolver contentResolver = getContentResolver();
+
+                int insertCount = contentResolver.bulkInsert(
+                        MovieContract.MovieEntry.CONTENT_URI,
+                        movieContentValues);
+
                 super.deliverResult(data);
             }
         };
+    }
+
+    private ContentValues[] createBulkInsertMovieValues(MovieList data) {
+        ContentValues[] bulkContentValues = new ContentValues[data.results.size()];
+        ContentValues cv;
+
+        for (int i = 0; i < data.results.size(); i++) {
+            cv = new ContentValues();
+
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, data.results.get(i).getId());
+            cv.put(MovieContract.MovieEntry.COLUMN_POSTER, data.results.get(i).getPosterPath());
+            cv.put(MovieContract.MovieEntry.COLUMN_SYSNOPSIS, data.results.get(i).getOverview());
+            cv.put(MovieContract.MovieEntry.COLUMN_USER_RATING, data.results.get(i).getVoteAverage());
+            cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, data.results.get(i).getReleaseDate());
+            cv.put(MovieContract.MovieEntry.COLUMN_FAVORITE, 1);
+
+            bulkContentValues[i] = cv;
+        }
+
+        return bulkContentValues;
     }
 
     @Override

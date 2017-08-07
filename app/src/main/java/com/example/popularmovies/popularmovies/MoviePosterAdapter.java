@@ -1,6 +1,7 @@
 package com.example.popularmovies.popularmovies;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     private MovieList mMovieList = null;
 
     private Context mParentContext;
+    private Cursor mCursor;
 
     /*
      * An on-click handler that we've defined to make it easy for an Activity to interface with
@@ -42,6 +44,11 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
      */
     public MoviePosterAdapter(MoviePosterAdapterOnClickHandler clickHandler) {
         mClickHandler = clickHandler;
+    }
+
+    public MoviePosterAdapter(MoviePosterAdapterOnClickHandler mClickHandler, Cursor mCursor) {
+        this.mCursor = mCursor;
+        this.mClickHandler = mClickHandler;
     }
 
     @Override

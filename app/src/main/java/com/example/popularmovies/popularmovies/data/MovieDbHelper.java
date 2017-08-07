@@ -6,15 +6,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class MovieDbHelper extends SQLiteOpenHelper {
 
-    // The name of the database
     private static final String DATABASE_NAME = "movieDb.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int VERSION = 1;
+    private static final int VERSION = 3;
 
 
     // Constructor
-    MovieDbHelper(Context context) {
+    public MovieDbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
 
@@ -27,6 +26,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
         final String CREATE_TABLE = "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
                 MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY, " +
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
                 MovieContract.MovieEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_RELEASE_DATE + "  TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_SYSNOPSIS + "  TEXT NOT NULL, " +
