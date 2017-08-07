@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -28,7 +29,6 @@ import com.example.popularmovies.popularmovies.data.MovieDbHelper;
 import com.example.popularmovies.popularmovies.data.PopularMoviesPreferences;
 import com.example.popularmovies.popularmovies.models.Movie;
 import com.example.popularmovies.popularmovies.models.MovieList;
-import com.example.popularmovies.popularmovies.models.Review;
 import com.example.popularmovies.popularmovies.utilities.NetworkUtils;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -39,7 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<MovieList>,
+        LoaderManager.LoaderCallbacks<Cursor>,
         MoviePosterAdapter.MoviePosterAdapterOnClickHandler,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements
 
         int loaderId = MOVIES_LOADER_ID;
 
-        LoaderManager.LoaderCallbacks<MovieList> callback = MainActivity.this;
+        LoaderManager.LoaderCallbacks<Cursor> callback = MainActivity.this;
 
         Bundle bundleForLoader = null;
 
@@ -172,16 +172,17 @@ public class MainActivity extends AppCompatActivity implements
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<MovieList> onCreateLoader(int id, final Bundle loaderArgs) {
+    public Loader<Cursor> onCreateLoader(int id, final Bundle loaderArgs) {
 
-        return new AsyncTaskLoader<MovieList>(this) {
+        return new AsyncTaskLoader<Cursor>(this) {
 
+            Cursor cursor = null;
             MovieList movieList = null;
 
             @Override
             protected void onStartLoading() {
-                if (movieList != null) {
-                    deliverResult(movieList);
+                if (cursor != null) {
+                    deliverResult(cursor);
                 } else {
                     mLoadingIndicator.setVisibility(View.VISIBLE);
                     forceLoad();
@@ -196,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements
              *         null if an error occurs
              */
             @Override
-            public MovieList loadInBackground() {
+            public Cursor loadInBackground() {
                 String sortOption = PopularMoviesPreferences
                         .getSortOption(MainActivity.this);
 
@@ -211,8 +212,68 @@ public class MainActivity extends AppCompatActivity implements
                     JsonAdapter<MovieList> jsonAdapter = moshi.adapter(MovieList.class);
 
                     movieList = jsonAdapter.fromJson(jsonResponse);
+                    ContentValues[] movieContentValues = createBulkInsertMovieValues(movieList);
+                    ContentResolver contentResolver = getContentResolver();
 
-                    return movieList;
+                    int insertCount = contentResolver.bulkInsert(
+                            MovieContract.MovieEntry.CONTENT_URI,
+                            movieContentValues);
+
+                    try {
+                        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+
+
+                        if (sortOption.equals("top_rated")) {
+                            String selection = MovieContract.MovieEntry.COLUMN_TOP_RATED + " = ?";
+                            ;
+                            String[] selectionArgs = {
+                                    "1"
+                            };
+
+                            return getContentResolver().query(uri,
+                                    null,
+                                    selection,
+                                    selectionArgs,
+                                    null);
+                        }
+
+                        if (sortOption.equals("popular")) {
+                            String selection = MovieContract.MovieEntry.COLUMN_POPULAR + " = ?";
+                            String[] selectionArgs = {
+                                    "1"
+                            };
+
+                            return getContentResolver().query(uri,
+                                    null,
+                                    selection,
+                                    selectionArgs,
+                                    null);
+                        }
+
+                        if (sortOption.equals("favorites")) {
+                            String selection = MovieContract.MovieEntry.COLUMN_FAVORITE + " = ?";
+                            String[] selectionArgs = {
+                                    "1"
+                            };
+
+                            return getContentResolver().query(uri,
+                                    null,
+                                    selection,
+                                    selectionArgs,
+                                    null);
+                        }
+
+                        return getContentResolver().query(uri,
+                                null,
+                                null,
+                                null,
+                                null);
+
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to asynchronously load data.");
+                        e.printStackTrace();
+                        return null;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -224,15 +285,8 @@ public class MainActivity extends AppCompatActivity implements
              *
              * @param data The result of the load
              */
-            public void deliverResult(MovieList data) {
-                movieList = data;
-
-                ContentValues[] movieContentValues = createBulkInsertMovieValues(data);
-                ContentResolver contentResolver = getContentResolver();
-
-                int insertCount = contentResolver.bulkInsert(
-                        MovieContract.MovieEntry.CONTENT_URI,
-                        movieContentValues);
+            public void deliverResult(Cursor data) {
+                cursor = data;
 
                 super.deliverResult(data);
             }
@@ -247,11 +301,23 @@ public class MainActivity extends AppCompatActivity implements
             cv = new ContentValues();
 
             cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, data.results.get(i).getId());
+            cv.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, data.results.get(i).getOriginalTitle());
+            cv.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, data.results.get(i).getOverview());
             cv.put(MovieContract.MovieEntry.COLUMN_POSTER, data.results.get(i).getPosterPath());
-            cv.put(MovieContract.MovieEntry.COLUMN_SYSNOPSIS, data.results.get(i).getOverview());
+            cv.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS, data.results.get(i).getOverview());
             cv.put(MovieContract.MovieEntry.COLUMN_USER_RATING, data.results.get(i).getVoteAverage());
             cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, data.results.get(i).getReleaseDate());
-            cv.put(MovieContract.MovieEntry.COLUMN_FAVORITE, 1);
+
+            String sortOption = PopularMoviesPreferences
+                    .getSortOption(MainActivity.this);
+
+            if (sortOption.equals("top_rated")) {
+                cv.put(MovieContract.MovieEntry.COLUMN_TOP_RATED, 1);
+            }
+
+            if (sortOption.equals("popular")) {
+                cv.put(MovieContract.MovieEntry.COLUMN_POPULAR, 1);
+            }
 
             bulkContentValues[i] = cv;
         }
@@ -260,9 +326,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoadFinished(Loader<MovieList> loader, MovieList data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mLoadingIndicator.setVisibility(View.INVISIBLE);
-        mMoviePosterAdapter.setMovieData(data);
+        mMoviePosterAdapter.swapCursor(data);
         if (null == data) {
             showErrorMessage();
         } else {
@@ -271,8 +337,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onLoaderReset(Loader<MovieList> loader) {
-
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
     @Override

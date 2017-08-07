@@ -115,8 +115,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                 int trailersLoaderId = MOVIE_TRAILERS_LOADER_ID;
                 int userReviewsLoaderId = MOVIE_USER_REVIEWS_LOADER_ID;
 
-                trailerListLoaderCallback = new TrailerListLoaderCallbacks(mMovie.getId());
-                userReviewListLoaderCallback = new UserReviewsListLoaderCallbacks(mMovie.getId());
+                trailerListLoaderCallback = new TrailerListLoaderCallbacks(mMovie.getMovieId());
+                userReviewListLoaderCallback = new UserReviewsListLoaderCallbacks(mMovie.getMovieId());
 
                 Bundle bundleForLoader = null;
 
@@ -143,14 +143,19 @@ public class MovieDetailActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_favorite) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER, mMovie.getPosterPath());
-            contentValues.put(MovieContract.MovieEntry.COLUMN_SYSNOPSIS, mMovie.getOverview());
-            contentValues.put(MovieContract.MovieEntry.COLUMN_USER_RATING, mMovie.getVoteAverage());
-            contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate());
-            contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, 1);
+            ContentValues cv = new ContentValues();
 
-            Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+            cv.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mMovie.getMovieId());
+            cv.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, mMovie.getOriginalTitle());
+            cv.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, mMovie.getOverview());
+            cv.put(MovieContract.MovieEntry.COLUMN_POSTER, mMovie.getPosterPath());
+            cv.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS, mMovie.getOverview());
+            cv.put(MovieContract.MovieEntry.COLUMN_USER_RATING, mMovie.getVoteAverage());
+            cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate());
+            cv.put(MovieContract.MovieEntry.COLUMN_FAVORITE, 1);
+
+            // TODO use update instead of insert
+            Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, cv);
 
             if (uri != null) {
                 Toast.makeText(getBaseContext(), "Movie added to favorites", Toast.LENGTH_LONG).show();

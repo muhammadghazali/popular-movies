@@ -20,9 +20,13 @@ public class MovieContract {
 
         public static final String COLUMN_MOVIE_ID = "movie_id";
         public static final String COLUMN_POSTER = "poster";
-        public static final String COLUMN_SYSNOPSIS = "sysnopsis";
+        public static final String COLUMN_ORIGINAL_TITLE = "original_title";
+        public static final String COLUMN_OVERVIEW = "overview";
+        public static final String COLUMN_SYNOPSIS = "synopsis";
         public static final String COLUMN_USER_RATING = "user_rating";
         public static final String COLUMN_RELEASE_DATE = "release_date";
         public static final String COLUMN_FAVORITE = "favorite";
+        public static final String COLUMN_POPULAR = "popular";
+        public static final String COLUMN_TOP_RATED = "top_rated";
     }
 }

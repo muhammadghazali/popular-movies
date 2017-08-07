@@ -1,15 +1,9 @@
 package com.example.popularmovies.popularmovies.models;
 
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
-
-import java.util.Date;
-
 public class Movie {
     int vote_count;
     int id;
+    int movieId;
     boolean video;
     double vote_average;
     String title;
@@ -22,6 +16,73 @@ public class Movie {
     boolean adult;
     String overview;
     String release_date;
+
+    public Movie() {
+    }
+
+    public void setVoteCount(int vote_count) {
+        this.vote_count = vote_count;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
+    }
+
+    public void setVoteAverage(double vote_average) {
+        this.vote_average = vote_average;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
+    }
+
+    public void setPosterPath(String poster_path) {
+        this.poster_path = poster_path;
+    }
+
+    public void setOriginalLanguage(String original_language) {
+        this.original_language = original_language;
+    }
+
+    public void setOriginalTitle(String original_title) {
+        this.original_title = original_title;
+    }
+
+    public void setGenreIds(double[] genre_ids) {
+        this.genre_ids = genre_ids;
+    }
+
+    public void setBackdropPath(String backdrop_path) {
+        this.backdrop_path = backdrop_path;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setReleaseDate(String release_date) {
+        this.release_date = release_date;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
+    }
 
     public String getPosterPath() {
         String basePath = "https://image.tmdb.org/t/p/w185/";
@@ -41,12 +102,7 @@ public class Movie {
     }
 
     public String getReleaseDate() {
-
-        final DateTimeFormatter displayFormat = DateTimeFormat.shortDate();
-        final DateTimeFormatter dtf = DateTimeFormat.forPattern("yyyy-MM-dd");
-        final LocalDate dt = dtf.parseLocalDate(release_date);
-
-        return dt.toString(displayFormat);
+        return release_date;
     }
 
     public int getId() {

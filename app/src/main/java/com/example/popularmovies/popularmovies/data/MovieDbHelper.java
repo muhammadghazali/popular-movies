@@ -9,7 +9,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "movieDb.db";
 
     // If you change the database schema, you must increment the database version
-    private static final int VERSION = 3;
+    private static final int VERSION = 9;
 
 
     // Constructor
@@ -18,20 +18,21 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     }
 
 
-    /**
-     * Called when the tasks database is created for the first time.
-     */
     @Override
     public void onCreate(SQLiteDatabase db) {
 
         final String CREATE_TABLE = "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + " (" +
                 MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY, " +
                 MovieContract.MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE, " +
+                MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE + " STRING NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_OVERVIEW + " STRING NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_RELEASE_DATE + "  TEXT NOT NULL, " +
-                MovieContract.MovieEntry.COLUMN_SYSNOPSIS + "  TEXT NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_SYNOPSIS + "  TEXT NOT NULL, " +
                 MovieContract.MovieEntry.COLUMN_FAVORITE + "  INTEGER NOT NULL DEFAULT 0, " +
-                MovieContract.MovieEntry.COLUMN_USER_RATING + " TEXT NOT NULL);";
+                MovieContract.MovieEntry.COLUMN_POPULAR + "  INTEGER NOT NULL DEFAULT 0, " +
+                MovieContract.MovieEntry.COLUMN_TOP_RATED + "  INTEGER NOT NULL DEFAULT 0, " +
+                MovieContract.MovieEntry.COLUMN_USER_RATING + " STRING NOT NULL);";
 
         db.execSQL(CREATE_TABLE);
     }

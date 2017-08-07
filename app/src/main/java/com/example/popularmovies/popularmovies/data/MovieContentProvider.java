@@ -14,8 +14,8 @@ public class MovieContentProvider extends ContentProvider {
 
     private MovieDbHelper mMovieDbHelper;
 
-    public static final int MOVIES = 100;
-    public static final int MOVIE_WITH_ID = 101;
+    public static final int MOVIE_WITH_ID = 100;
+    public static final int MOVIES = 101;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -103,7 +103,29 @@ public class MovieContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
 
-        throw new UnsupportedOperationException("Not yet implemented");
+        final SQLiteDatabase db = mMovieDbHelper.getReadableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        Cursor retCursor;
+
+        switch (match) {
+            case MOVIES:
+                retCursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        null);
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return retCursor;
     }
 
 
